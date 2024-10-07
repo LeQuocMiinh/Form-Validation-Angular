@@ -1,0 +1,74 @@
+<section class="todo-list">
+    <div class="wrapper bg-white p-3">
+        <h1>Create</h1>
+        <form #formContainer [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-wrapper">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="email" class="form-control" id="title" formControlName="title" name="title">
+                </div>
+                <div class="mb-3">
+                    <label for="due_date" class="form-label">Due Date</label>
+                    <input type="date" formControlName="due_date" class="form-control " id="due_date" id="due_date"
+                        name="due_date">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Category</label>
+                    <div class="d-flex">
+                        <select class="form-select" formControlName="category">
+                            <option *ngFor="let item of categoryOptions" [value]="item.value">{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+
+        <h1 class="mt-5">Todo List</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of listTodo; let i = index"
+                    [ngClass]="item?.status === 'completed' ? 'green' : 'red'">
+                    <th scope="row">{{i}}</th>
+                    <td>{{item?.title}}</td>
+                    <td>{{item?.category}}</td>
+                    <td>{{item?.due_date | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{item?.status}}</td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" (change)="updateStatus(i, item?.status)"
+                                [checked]="item?.status === 'completed'">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header d-flex justify-content-between">
+            <div class="icon d-flex align-items-center gap-2" [ngStyle]="{color: toast.color}">
+                <i [ngClass]="toast.icon" style="font-size: 30px;"></i>
+                <h4 class="m-0">{{toast.status}}</h4>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" [ngStyle]="{color: toast.color}">
+            {{toast.message}}
+        </div>
+    </div>
+</div>

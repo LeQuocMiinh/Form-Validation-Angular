@@ -1,1 +1,69 @@
 /* You can add global styles to this file, and also import other style files */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: "Fredoka", sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -ms-overflow-style: scrollbar;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    scroll-behavior: smooth;
+}
+
+
+body {
+    font-family: "Fredoka", sans-serif;
+    font-style: normal;
+    color: #212529;
+    font-weight: 400;
+    background-color: #F5F5F5;
+
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar {
+        width: 10px;
+        background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-image: -webkit-gradient(linear,
+                left bottom,
+                left top,
+                color-stop(0.44, rgb(138, 165, 218)),
+                color-stop(0.72, rgb(95, 146, 208)),
+                color-stop(0.86, rgb(118, 147, 235)));
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+tr.green {
+    td {
+        color: green;
+    }
+}
+
+tr.red {
+    td {
+        color: red;
+    }
+}
