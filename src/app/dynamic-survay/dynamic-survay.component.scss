@@ -1,0 +1,13 @@
+.dynamic-survay {
+    background: #ffff;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.form-container {
+    .form-group {
+        &:not(:last-child) {
+            border-bottom: 1px solid #3f3f3f;
+        }
+    }
+}
