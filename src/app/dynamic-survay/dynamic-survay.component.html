@@ -1,0 +1,132 @@
+<div class="dynamic-survay">
+    <div class="toolbar d-flex justify-content-end">
+        <button routerLink="/todo-list" class="btn btn-info mb3"><i class="bi bi-arrow-return-left"></i> TODO
+            LIST</button>
+    </div>
+    <h1 class="text-center">Dynamic Survay Question</h1>
+
+    <form [formGroup]="form">
+        <div class="form-container" formArrayName="questions">
+            <div class="form-group mt-4" *ngFor="let question of questions.controls; let questionIndex = index"
+                [formGroupName]="questionIndex">
+                <h3> <i class="bi bi-patch-question"></i> Question {{questionIndex+1}}</h3>
+                <div class="row mb-3">
+                    <div class="col-8">
+                        <label for="question_text" class="form-label"> Question Text</label>
+                        <input
+                            [ngClass]="{'is-invalid': question.get('question_text')?.touched && question.get('question_text')?.invalid}"
+                            type="text" formControlName="question_text" class="form-control " id="question_text"
+                            name="question_text">
+                        <div *ngIf="question.get('question_text')?.touched && question.get('question_text')?.invalid"
+                            class="error-text text-danger">
+                            Question text is required.
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <label for="question_text" class="form-label">Question Type</label>
+                        <select class="form-select" name="question_type" id="question_type"
+                            formControlName="question_type" (change)="clearAnswer(questionIndex)">
+                            <option *ngFor="let type of question_type" [value]="type?.value">{{type?.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="result">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-8">
+                            <label for="">Result</label>
+                        </div>
+                        <div class="col-4 d-flex align-items-center gap-1">
+                            <input style="width: 20px; height: 20px; cursor: pointer;" type="checkbox"
+                                placeholder="Optional">
+                            <span>Optional</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="question.get('question_type')?.value === 'yes-no'"
+                        class="yes-no mb-1 mt-1 d-flex gap-3 align-items-center" formArrayName="answers">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="true" [name]="'yesno'+questionIndex"
+                                [id]="'flexRadioDefault1' + questionIndex"
+                                (change)="changeQuestionResult(questionIndex, $event)">
+                            <label class="form-check-label" [for]="'flexRadioDefault1'+questionIndex">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="false" [name]="'yesno'+questionIndex"
+                                [id]="'flexRadioDefault2'+questionIndex" checked
+                                (change)="changeQuestionResult(questionIndex, $event)">
+                            <label class="form-check-label" [for]="'flexRadioDefault2'+questionIndex">
+                                No
+                            </label>
+                        </div>
+                    </div>
+
+                    <div *ngIf="question.get('question_type')?.value === 'multi-choice'"
+                        class="multiple-choice mb-1 mt-1" formArrayName="answers">
+                        <div *ngFor="let answer of getAnswersArr(questionIndex).controls; let answerIndex = index"
+                            [formGroupName]="answerIndex" class="mb-3">
+                            <div class="row align-items-end">
+                                <div class="col-6">
+                                    <label for="answer_text" class="form-label">Answers {{answerIndex + 1}}</label>
+                                    <input
+                                        [ngClass]="{'is-invalid': answer.get('answer_text')?.touched && answer.get('answer_text')?.invalid}"
+                                        type="text" formControlName="answer_text" class="form-control " id="answer_text"
+                                        name="answer_text">
+                                </div>
+                                <div class="col-6 d-flex gap-4 align-items-center">
+                                    <div class="d-flex gap-1">
+                                        <input
+                                            [ngClass]="{'is-invalid': questions.at(questionIndex).errors?.['noCorrectAnswer']}"
+                                            style="width: 20px; height: 20px; cursor: pointer;" type="checkbox"
+                                            formControlName="is_correct">
+                                        <span>Correct</span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <button (click)="removeAnswer(questionIndex, answerIndex);"
+                                            class="btn btn-outline-danger">Delete
+                                            Answer</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="answer.get('answer_text')?.touched && answer.get('answer_text')?.invalid"
+                                class="error-text text-danger">
+                                Answer is required.
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-5">
+                            <div *ngIf="questions.at(questionIndex).errors?.['insufficientAnswers']"
+                                class="error-text text-danger">
+                                Has min two answers.
+                            </div>
+                            <div *ngIf="questions.at(questionIndex).errors?.['noCorrectAnswer']"
+                                class="error-text text-danger">
+                                At least one is correct.
+                            </div>
+                        </div>
+                        <button (click)="addAnswers(questionIndex)" class="btn btn-outline-warning mt-2">Add
+                            Answers</button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button (click)="removeQuestion(questionIndex)" type="button"
+                        class="btn btn-outline-danger mt-3 mb-3"><i class="bi bi-trash2"></i> Remove
+                        Question</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="d-flex justify-content-center gap-4 w-100 align-items-center" style="margin-top: 50px;">
+        <button (click)="addQuestion()" class="btn btn-info mt-3 mb-3">
+            <h5 style="line-height:  normal; margin: 0;"><i class="bi bi-plus-circle"></i> ADD QUESTION</h5>
+        </button>
+        <button *ngIf="questions.length > 0" (click)="submit()" class="btn btn-success">
+            <h5 style="line-height:  normal; margin: 0;"><i class="bi bi-check-all"></i> SUBMIT</h5>
+        </button>
+    </div>
+    <div *ngIf="questions.length >= 2" class="d-flex justify-content-start">
+        <button (click)="questions.clear()" class="btn btn-danger mt-3 mb-3">
+            <h6 style="line-height:  normal; margin: 0;"><i class="bi bi-trash3-fill"></i> Clear All</h6>
+        </button>
+    </div>
+</div>

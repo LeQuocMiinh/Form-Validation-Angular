@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
   },
   {
+    path: 'dynamic-survay',
+    loadChildren: () => import('./dynamic-survay/dynamic-survay.module').then(m => m.DynamicSurvayModule)
+  },
+  {
     path: '',
     redirectTo: '/register',
     pathMatch: 'full'
