@@ -120,10 +120,14 @@ export class DynamicSurvayComponent implements OnInit {
    * @param controls 
    * @returns 
    */
-  multipleChoiceValidator(controls: AbstractControl): { [key: string]: boolean } | null {
-    const formArr = controls.get('answers') as FormArray;
-    const hasMinTwoAnswers = controls.get('question_type')?.value != 'yes-no' ? formArr.length >= 2 : true;
-    const hasCorrectAnswer = controls.get('question_type')?.value != 'yes-no' ? formArr.controls.some(control => control.get('is_correct')?.value) : true;
+  multipleChoiceValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const optional = control.get('optional')?.value;
+    if (optional) {
+      return null;
+    }
+    const formArr = control.get('answers') as FormArray;
+    const hasMinTwoAnswers = control.get('question_type')?.value != 'yes-no' ? formArr.length >= 2 : true;
+    const hasCorrectAnswer = control.get('question_type')?.value != 'yes-no' ? formArr.controls.some(control => control.get('is_correct')?.value) : true;
     if (!hasMinTwoAnswers) {
       return { insufficientAnswers: true };
     } if (!hasCorrectAnswer) {
@@ -138,6 +142,8 @@ export class DynamicSurvayComponent implements OnInit {
    */
   submit() {
     if (this.form.invalid) {
+      console.log(this.form.controls);
+
       this.form.markAllAsTouched();
       return;
     }
